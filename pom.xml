@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.5.0</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.example</groupId>
+	<artifactId>spring-boot-docker-plugin</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>spring-boot-docker-plugin</name>
+	
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+		    <plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			
+			<plugin>
+				  <groupId>io.fabric8</groupId>
+				  <artifactId>docker-maven-plugin</artifactId>
+				  <version>0.36.0</version>
+				  <configuration>
+				     <registry>docker.io/jyothirgamya</registry>
+				  	 <images>
+				  		<image>
+				  		  <name>springboot-docker-im</name>
+				  			
+				  			<build>
+				  			
+				  			   <from>java:8</from>
+				  			    <assembly>
+                        			<descriptorRef>artifact</descriptorRef>
+                    			</assembly>
+				  			   <cmd>
+				  			   	<shell>java -jar /maven/spring-boot-docker-plugin-0.0.1-SNAPSHOT.jar</shell>
+				  			   </cmd>
+				  			   <tags>
+				  			   	<tag>1.0.0</tag>
+				  			   </tags>
+				  			</build>
+				  			<run>
+				  				<ports>
+				  					<port>tomcat.port:8080</port>
+				  				</ports>
+				  				 <wait> 
+						          <http>
+						            <url>http://localhost:${tomcat.port}/access</url>
+						          </http>
+						          <time>10000</time>
+						        </wait>
+				  			</run>
+				  		</image>
+				  		
+				  	</images>
+				  		<authConfig>
+				  		 
+				  			<username>jyothirgamya</username>
+				  			<password>Jyothi@123</password>
+				  		
+				  		</authConfig>
+				  	
+				  </configuration>
+				  
+				  <!-- <configuration>    
+        <verbose>true</verbose>
+        <images>
+            <image>
+                <name>jyothirgamya/demo-docker</name>
+                <build>
+                    <dockerFileDir>${project.basedir}</dockerFileDir>
+                    <assembly>
+                        <descriptorRef>artifact</descriptorRef>
+                    </assembly>
+                    <tags>
+                        <tag>1.0.1</tag>
+                    </tags>
+                </build>
+            </image>
+        </images>
+    </configuration> -->
+				  <executions>
+				     <execution>
+				        <id>default</id>
+				        <phase>install</phase>
+				        	<goals>
+				            	<goal>build</goal>
+				            	<goal>push</goal>
+				        </goals>
+    			  </execution>
+  				 </executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
